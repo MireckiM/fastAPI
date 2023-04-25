@@ -1,45 +1,93 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      test<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container" style="margin-top: 20px;">
+    <h3>Biblioteka app</h3>
+    <form @submit.prevent="submitForm" style="margin-top: 20px;">
+    <div class="form-group row mb-4">
+      <input
+        type="text"
+        class="form-control col-3 mx-2"
+        placeholder="Tytuł"
+        
+      />
+      <input
+        type="text"
+        class="form-control col-3 mx-2"
+        placeholder="Autor"
+        
+      />
+      <input
+        type="text"
+        class="form-control col-3 mx-2"
+        placeholder="Strony"
+        
+      />
+      <input
+        type="number"
+        class="form-control col-3 mx-2"
+        placeholder="ID klienta"
+        
+      />
+      <button class="btn btn-success ml-3" style="margin-top: 20px">Dodaj</button>
+    </div>
+  </form>
+
+    <table class="table">
+      <thead>
+        <th>Tytuł</th>
+        <th>Autor</th>
+        <th>Strony</th>
+        <th>Klient</th>
+      </thead>
+      <tbody>
+        <tr v-for="book in books" :key="book.id" @dblclick="$data.book = book">
+          <td>{{ book.title }}</td>
+          <td>{{ book.author }}</td>
+          <td>{{ book.pages }}</td>
+          <td>{{ book.client_id }}</td>
+          <td>
+            <button
+              class="btn btn-danger btn-sm mx-1"
+              @click="deleteBook(book)"
+            >
+              X
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+  name: "App",
+  data() {
+    return {
+      books: [],
+      book: {},
+    };
+  },
+  async created() {
+    await this.getBooks();
+  },
+  methods: {
+    submitForm() {},
+    async getBooks() {
+      //var response = await fetch("http://127.0.0.1:8000/api/books/");
+      //this.books = await response.json();
+    },
+    async addBook() {},
+    async editBook() {},
+    async deleteBook() {},
+    clear() {
+      this.book.title = "";
+      this.book.author = "";
+      this.book.pages = "";
+    },
+  },
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
