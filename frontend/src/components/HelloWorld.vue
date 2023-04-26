@@ -1,35 +1,54 @@
 <template>
-  <div class="container" style="margin-top: 20px;">
+  <div class="container" style="margin-top: 20px">
     <h3>Biblioteka app</h3>
-    <form @submit.prevent="submitForm" style="margin-top: 20px;">
-    <div class="form-group row mb-4">
-      <input
-        type="text"
-        class="form-control col-3 mx-2"
-        placeholder="Tytuł"
-        
-      />
-      <input
-        type="text"
-        class="form-control col-3 mx-2"
-        placeholder="Autor"
-        
-      />
-      <input
-        type="text"
-        class="form-control col-3 mx-2"
-        placeholder="Strony"
-        
-      />
-      <input
-        type="number"
-        class="form-control col-3 mx-2"
-        placeholder="ID klienta"
-        
-      />
-      <button class="btn btn-success ml-3" style="margin-top: 20px">Dodaj</button>
-    </div>
-  </form>
+    <form @submit.prevent="submitForm" style="margin-top: 20px">
+      <div class="form-group row mb-4">
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col">
+            <input
+              type="text"
+              class="form-control col-3 mx-2"
+              placeholder="Tytuł"
+            />
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              class="form-control col-3 mx-2"
+              placeholder="Autor"
+            />
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              class="form-control col-3 mx-2"
+              placeholder="Strony"
+            />
+          </div>
+          <div class="col">
+            <input
+              type="number"
+              class="form-control col-3 mx-2"
+              placeholder="ID klienta"
+            />
+          </div>
+          <div class="col-2"></div>
+        </div>
+        <div class="row">
+          <div class="col-3"></div>
+          <div class="col">
+            <button
+              class="btn btn-success"
+              style="margin-top: 20px; width: 100%"
+            >
+              Dodaj
+            </button>
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>
+    </form>
 
     <table class="table">
       <thead>
@@ -73,8 +92,8 @@ export default {
   methods: {
     submitForm() {},
     async getBooks() {
-      //var response = await fetch("http://127.0.0.1:8000/api/books/");
-      //this.books = await response.json();
+      var response = await fetch("http://0.0.0.0:8001/books/");
+      this.books = await response.json();
     },
     async addBook() {},
     async editBook() {},
