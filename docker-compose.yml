@@ -33,3 +33,11 @@ services:
     depends_on:
       - db
     restart: always
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - './frontend:/app'
+      - '/app/node_modules'
+    ports:
+      - 8080:8080
