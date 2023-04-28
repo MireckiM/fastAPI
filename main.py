@@ -40,7 +40,8 @@ def add_book(book: SchemaBook):
 
 @app.post("/add-client/", response_model=SchemaClient)
 def add_client(client: SchemaClient):
-    db_client = Client(name=client.name, age=client.age, client_id=book.client_id)
+    db_client = Client(name=client.name, age=client.age)
+    #db_client = Client(name=client.name, age=client.age, client_id=book.client_id)
     db.session.add(db_client)
     db.session.commit()
     return db_client
