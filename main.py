@@ -17,6 +17,8 @@ app = FastAPI()
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
+origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:8080"],
@@ -27,7 +29,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello"}
+    return {"message": "Witam"}
 
 @app.post("/add-book/", response_model=SchemaBook)
 def add_book(book: SchemaBook):
@@ -47,6 +49,11 @@ def add_client(client: SchemaClient):
 def get_books():
     books = db.session.query(Book).all()
     return books
+
+@app.get("/clients/")
+def get_clients():
+    clients = db.session.query(Client).all()
+    return clients
 
 if __name__== "__main__":
     uvicorn.run(app, host = "0.0.0.0", port=8001)

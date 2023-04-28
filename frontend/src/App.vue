@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col"></div>
-          <form class="form-inline d-flex justify-content-between">
+          <!--<form class="form-inline d-flex justify-content-between">
             <input
               class="form-control mr-sm-2"
               type="search"
@@ -15,7 +15,7 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
               Search
             </button>
-          </form>
+          </form>-->
         </div>
       </div>
     </nav>
