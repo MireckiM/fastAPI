@@ -11,9 +11,16 @@ from schema import Client as SchemaClient
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
+from fastapi.security import OAuth2PasswordBearer
+
 load_dotenv(".env")
 
 app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
@@ -30,6 +37,10 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Witam"}
+
+@app.get("/items/")
+async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token}
 
 @app.post("/add-book/", response_model=SchemaBook)
 def add_book(book: SchemaBook):
