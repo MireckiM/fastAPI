@@ -1,5 +1,6 @@
 import os
 import uvicorn
+#import jwt
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from dotenv import load_dotenv
@@ -13,28 +14,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, FastAPI, HTTPException, status, Security
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
 from pydantic import BaseModel
 
 load_dotenv(".env")
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    },
-    "alice": {
-        "username": "alice",
-        "full_name": "Alice Wonderson",
-        "email": "alice@example.com",
-        "hashed_password": "fakehashedsecret2",
-        "disabled": True,
-    },
-}
+users = []
 
 app = FastAPI()
 
@@ -52,6 +40,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class AuthHandler():
+    security = HTTPBearer()
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    secret = 'SECRET'
+
+    def get_password_hash(self, password):
+        return self.pwd_context.hash(password)
+    
+    def verify_password(self, plain_password, hashed_password):
+        return self.pwd_context.verify(plain_password, hashed_password)
+    
+    def encode_token(self,user_id):
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=1, minutes=10),
+            'iat': datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            self.secret,
+            algorithm='HS256'
+        )
+    
+    def decode_token(self, token):
+        try:
+            payload = jwt.decode(token, self.secret, algorithms=['HS256'])
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail='Signature has expired')
+        except jwt.InvalidTokenError as e:
+            raise HTTPException(status_code=401, detail='Invalid token')
+        
+    def auth_wrapper(self, auth: HTTPAuthorizationCredentials = Security(security)):
+        return self.decode_token(auth.credentials)
+
 class User(BaseModel):
     username: str
     email: str | None = None
@@ -68,6 +91,21 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = fake_decode_token(token)
     return user
 
+@app.post("/register")
+def register():
+    return {}
+
+@app.post("/login")
+def login():
+    return {}
+
+app.get("/unprotected")
+def unprotected():
+    return {'unprotected'}
+
+app.get("/protected")
+def protected():
+    return {}
 
 @app.get("/users/me")
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
