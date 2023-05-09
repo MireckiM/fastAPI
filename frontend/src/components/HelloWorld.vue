@@ -1,158 +1,220 @@
 <template>
   <div class="container" style="margin-top: 20px">
-    <h3>Użytkownicy</h3>
-    <form @submit.prevent="submitForm" style="margin-top: 20px">
-      <div class="form-group row mb-4">
-        <div class="row">
-          <div class="col-2"></div>
-          <div class="col">
-            <input
-              type="text"
-              class="form-control col-3 mx-2"
-              placeholder="Imię"
-              v-model="client.name"
-            />
-          </div>
+    <div v-if="userLogged == true">
+      <h3>Użytkownicy</h3>
+      <form @submit.prevent="submitForm" style="margin-top: 20px">
+        <div class="form-group row mb-4">
+          <div class="row">
+            <div class="col-2"></div>
+            <div class="col">
+              <input
+                type="text"
+                class="form-control col-3 mx-2"
+                placeholder="Imię"
+                v-model="client.name"
+              />
+            </div>
 
-          <div class="col">
-            <input
-              type="text"
-              class="form-control col-3 mx-2"
-              placeholder="Wiek"
-              v-model="client.age"
-            />
+            <div class="col">
+              <input
+                type="text"
+                class="form-control col-3 mx-2"
+                placeholder="Wiek"
+                v-model="client.age"
+              />
+            </div>
+
+            <div class="col-2"></div>
           </div>
-          <!--<div class="col">
-            <input
-              type="number"
-              class="form-control col-3 mx-2"
-              placeholder="ID klienta"
-              v-model="book.client_id"
-            />
-          </div>-->
-          <div class="col-2"></div>
+          <div class="row">
+            <div class="col-3"></div>
+            <div class="col">
+              <button
+                class="btn btn-success"
+                style="margin-top: 20px; width: 100%"
+                @click="addClient(client)"
+              >
+                Dodaj użytkownika
+              </button>
+            </div>
+            <div class="col-3"></div>
+          </div>
         </div>
-        <div class="row">
-          <div class="col-3"></div>
-          <div class="col">
-            <button
-              class="btn btn-success"
-              style="margin-top: 20px; width: 100%"
-              @click="addClient(client)"
-            >
-              Dodaj użytkownika
-            </button>
+      </form>
+
+      <table class="table">
+        <thead>
+          <th>ID</th>
+          <th>Klient</th>
+          <th>Wiek</th>
+        </thead>
+        <tbody>
+          <tr
+            v-for="client in clients"
+            :key="client.id"
+            @dblclick="$data.client = client"
+          >
+            <td>{{ client.id }}</td>
+            <td>{{ client.name }}</td>
+            <td>{{ client.age }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="hr hr-blurry" />
+
+      <h3>Książki</h3>
+      <form @submit.prevent="submitForm" style="margin-top: 20px">
+        <div class="form-group row mb-4">
+          <div class="row">
+            <div class="col-2"></div>
+            <div class="col">
+              <input
+                type="text"
+                class="form-control col-3 mx-2"
+                placeholder="Tytuł"
+                v-model="book.title"
+              />
+            </div>
+
+            <div class="col">
+              <input
+                type="text"
+                class="form-control col-3 mx-2"
+                placeholder="Strony"
+                v-model="book.pages"
+              />
+            </div>
+            <div class="col">
+              <input
+                type="number"
+                class="form-control col-3 mx-2"
+                placeholder="ID klienta"
+                v-model="book.client_id"
+              />
+            </div>
+            <div class="col-2"></div>
           </div>
-          <div class="col-3"></div>
+          <div class="row">
+            <div class="col-3"></div>
+            <div class="col">
+              <button
+                class="btn btn-success"
+                style="margin-top: 20px; width: 100%"
+                @click="addBook(book)"
+              >
+                Dodaj książkę
+              </button>
+            </div>
+            <div class="col-3"></div>
+          </div>
+        </div>
+      </form>
+
+      <table class="table">
+        <thead>
+          <th>Tytuł</th>
+          <th>Strony</th>
+          <th>Klient</th>
+        </thead>
+        <tbody>
+          <tr
+            v-for="book in books"
+            :key="book.id"
+            @dblclick="$data.book = book"
+          >
+            <td>{{ book.title }}</td>
+            <td>{{ book.pages }}</td>
+            <td>{{ book.client_id }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-else>
+      <div v-if="logging == true">
+        <div class="card mx-auto" style="width: 18rem">
+          <div class="card-body">
+            <h5 class="card-title" style="margin-bottom: 20px">Logowanie</h5>
+
+            <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Nazwa użytkownika</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  placeholder="Username"
+                  style="margin-bottom: 20px"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Hasło</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Password"
+                  style="margin-bottom: 20px"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="margin-bottom: 20px"
+              >
+                Zaloguj
+              </button>
+            </form>
+            <a href="#" @click="logging = false" class="card-link"
+              >Rejestracja</a
+            >
+          </div>
         </div>
       </div>
-    </form>
+      <div v-else>
+        <div class="card mx-auto" style="width: 18rem">
+          <div class="card-body">
+            <h5 class="card-title" style="margin-bottom: 20px">Rejestracja</h5>
 
-    <table class="table">
-      <thead>
-        <th>ID</th>
-        <th>Klient</th>
-        <th>Wiek</th>
-      </thead>
-      <tbody>
-        <tr
-          v-for="client in clients"
-          :key="client.id"
-          @dblclick="$data.client = client"
-        >
-          <td>{{ client.id }}</td>
-          <td>{{ client.name }}</td>
-          <td>{{ client.age }}</td>
-          <!--<td>
-            <button
-              class="btn btn-danger btn-sm mx-1"
-              @click="deleteBook(book)"
-            >
-              X
-            </button>
-          </td>-->
-        </tr>
-      </tbody>
-    </table>
+            <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Nazwa użytkownika</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  placeholder="Username"
+                  style="margin-bottom: 20px"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Hasło</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Password"
+                  style="margin-bottom: 20px"
+                />
+              </div>
 
-    <hr class="hr hr-blurry" />
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="margin-bottom: 20px"
+              >
+                Rejestracja
+              </button>
+            </form>
 
-    <h3>Książki</h3>
-    <form @submit.prevent="submitForm" style="margin-top: 20px">
-      <div class="form-group row mb-4">
-        <div class="row">
-          <div class="col-2"></div>
-          <div class="col">
-            <input
-              type="text"
-              class="form-control col-3 mx-2"
-              placeholder="Tytuł"
-              v-model="book.title"
-            />
+            <a href="#" @click="logging = true" class="card-link">Logowanie</a>
           </div>
-          <!--<div class="col">
-            <input
-              type="text"
-              class="form-control col-3 mx-2"
-              placeholder="Autor"
-            />
-          </div>-->
-          <div class="col">
-            <input
-              type="text"
-              class="form-control col-3 mx-2"
-              placeholder="Strony"
-              v-model="book.pages"
-            />
-          </div>
-          <div class="col">
-            <input
-              type="number"
-              class="form-control col-3 mx-2"
-              placeholder="ID klienta"
-              v-model="book.client_id"
-            />
-          </div>
-          <div class="col-2"></div>
-        </div>
-        <div class="row">
-          <div class="col-3"></div>
-          <div class="col">
-            <button
-              class="btn btn-success"
-              style="margin-top: 20px; width: 100%"
-              @click="addBook(book)"
-            >
-              Dodaj książkę
-            </button>
-          </div>
-          <div class="col-3"></div>
         </div>
       </div>
-    </form>
-
-    <table class="table">
-      <thead>
-        <th>Tytuł</th>
-        <th>Strony</th>
-        <th>Klient</th>
-      </thead>
-      <tbody>
-        <tr v-for="book in books" :key="book.id" @dblclick="$data.book = book">
-          <td>{{ book.title }}</td>
-          <td>{{ book.pages }}</td>
-          <td>{{ book.client_id }}</td>
-          <!--<td>
-            <button
-              class="btn btn-danger btn-sm mx-1"
-              @click="deleteBook(book)"
-            >
-              X
-            </button>
-          </td>-->
-        </tr>
-      </tbody>
-    </table>
+    </div>
   </div>
 </template>
 
@@ -165,6 +227,8 @@ export default {
       book: {},
       clients: [],
       client: {},
+      userLogged: false,
+      logging: true,
     };
   },
   async created() {
