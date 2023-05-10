@@ -163,6 +163,7 @@
                 type="submit"
                 class="btn btn-primary"
                 style="margin-bottom: 20px"
+                @click="login()"
               >
                 Zaloguj
               </button>
@@ -188,6 +189,7 @@
                   aria-describedby="emailHelp"
                   placeholder="Username"
                   style="margin-bottom: 20px"
+                  v-model="username"
                 />
               </div>
               <div class="form-group">
@@ -197,14 +199,46 @@
                   class="form-control"
                   id="exampleInputPassword1"
                   placeholder="Password"
-                  style="margin-bottom: 20px"
+                  style="margin-bottom: 10px"
+                  v-model="password"
                 />
               </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Powtórz hasło</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Password"
+                  style="margin-bottom: 20px"
+                  v-model="password2"
+                />
+              </div>
+              <footer
+                v-if="password != password2 && password2 != ''"
+                class="blockquote-footer"
+                style="color: red"
+              >
+                Hasła muszą być identyczne!
+              </footer>
 
               <button
+                v-if="
+                  password == password2 && password2 != '' && username != ''
+                "
                 type="submit"
                 class="btn btn-primary"
                 style="margin-bottom: 20px"
+                @click="register()"
+              >
+                Rejestracja
+              </button>
+              <button
+                v-else
+                type="submit"
+                class="btn btn-primary"
+                style="margin-bottom: 20px"
+                disabled
               >
                 Rejestracja
               </button>
@@ -229,6 +263,9 @@ export default {
       client: {},
       userLogged: false,
       logging: true,
+      username: "",
+      password: "",
+      password2: "",
     };
   },
   async created() {
@@ -243,6 +280,39 @@ export default {
         this.editBook();
       }
     },*/,
+    login() {
+      var response = fetch("http://0.0.0.0:8001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+        }),
+      });
+      console.log("login");
+      console.log(response);
+      location.reload();
+    },
+
+    register() {
+      var response = fetch("http://0.0.0.0:8001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+        }),
+      });
+      console.log("ok");
+      console.log(response);
+      //location.reload();
+    },
     async getBooks() {
       var response = await fetch("http://0.0.0.0:8001/books/");
       console.log(response);
