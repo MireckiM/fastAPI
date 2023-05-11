@@ -146,6 +146,7 @@
                   aria-describedby="emailHelp"
                   placeholder="Username"
                   style="margin-bottom: 20px"
+                  v-model="username"
                 />
               </div>
               <div class="form-group">
@@ -156,6 +157,7 @@
                   id="exampleInputPassword1"
                   placeholder="Password"
                   style="margin-bottom: 20px"
+                  v-model="password"
                 />
               </div>
 
@@ -294,7 +296,8 @@ export default {
       });
       console.log("login");
       console.log(response);
-      location.reload();
+      //console.log("token: " + response.data.token)
+      //location.reload();
     },
 
     register() {
