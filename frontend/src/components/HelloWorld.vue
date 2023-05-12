@@ -282,7 +282,7 @@ export default {
         this.editBook();
       }
     },*/,
-    login() {
+    async login() {
       var response = fetch("http://0.0.0.0:8001/login", {
         method: "POST",
         headers: {
@@ -293,10 +293,11 @@ export default {
           username: this.username,
           password: this.password,
         }),
-      });
-      console.log("login");
-      console.log(response);
-      //console.log("token: " + response.data.token)
+      }).then((response) => response.json());
+      console.log(await response);
+      localStorage.setItem("token", (await response));
+      console.log(localStorage.getItem("token"));
+
       //location.reload();
     },
 
