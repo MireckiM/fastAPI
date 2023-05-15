@@ -274,7 +274,7 @@ export default {
   async created() {
     await this.getBooks();
     await this.getClients();
-    this.isUserAuthenticated();
+    await this.isUserAuthenticated();
   },
   methods: {
     submitForm() {} /*{
@@ -322,6 +322,8 @@ export default {
       }else{
         this.userLogged = false;
       }
+      console.log(this.userLogged);
+      console.log(localStorage.getItem("token"));
     },
 
     register() {
