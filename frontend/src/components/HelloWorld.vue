@@ -274,6 +274,7 @@ export default {
   async created() {
     await this.getBooks();
     await this.getClients();
+    this.isUserAuthenticated();
   },
   methods: {
     submitForm() {} /*{
@@ -312,6 +313,14 @@ export default {
       this.userTokenized = auth["name"];
       if (this.userTokenized == this.username) {
         this.userLogged = true;
+      }
+    },
+
+    isUserAuthenticated(){
+      if (localStorage.getItem("token" != null)){
+        this.userLogged = true;
+      }else{
+        this.userLogged = false;
       }
     },
 
