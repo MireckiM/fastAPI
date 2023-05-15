@@ -264,6 +264,7 @@ export default {
       clients: [],
       client: {},
       userLogged: false,
+      userTokenized: "",
       logging: true,
       username: "",
       password: "",
@@ -295,10 +296,23 @@ export default {
         }),
       }).then((response) => response.json());
       console.log(await response);
-      localStorage.setItem("token", (await response));
+      var res = await response;
+      //console.log(res["token"]);
+      localStorage.setItem("token", res["token"]);
       console.log(localStorage.getItem("token"));
 
-      //location.reload();
+      var auth = await fetch("http://localhost:8001/protected", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer" + " " + res["token"],
+        },
+      }).then((auth) => auth.json());
+      console.log(auth);
+      console.log(auth["name"]);
+      this.userTokenized = auth["name"];
+      if (this.userTokenized == this.username) {
+        this.userLogged = true;
+      }
     },
 
     register() {
@@ -333,9 +347,6 @@ export default {
       var response = await fetch("http://0.0.0.0:8001/add-book/", {
         method: "post",
         headers: {
-          //title: this.book.title,
-          //pages: this.book.pages,
-          //client_id: this.book.client_id,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(this.book),
