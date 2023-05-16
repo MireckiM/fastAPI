@@ -168,6 +168,23 @@ export default {
       }*/
     },
 
+    register() {
+      var response = fetch("http://0.0.0.0:8001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+        }),
+      });
+      console.log("ok");
+      console.log(response);
+      //location.reload();
+    },
+
     isUserAuthenticated() {
       if (localStorage.getItem("token" != null)) {
         this.userLogged = true;
