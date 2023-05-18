@@ -19,12 +19,14 @@
       </button>
     </nav>
     <div class="container-fluid">
+      <!--
       <div v-if="token == null">
         <HelloWorld />
       </div>
       <div v-else>
         <HelloBooks />
-      </div>
+      </div>-->
+      <router-view />
     </div>
   </div>
 </template>
