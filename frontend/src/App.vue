@@ -5,11 +5,11 @@
         class="navbar-brand"
         href="#"
         style="margin-left: 3%"
-        v-if="token != null"
+        v-if="username != undefined"
         >Witaj {{ username }}</a
       >
       <button
-        v-if="token != null"
+        v-if="username != undefined"
         class="btn btn-outline-danger"
         type="button"
         style="margin-right: 3%"
@@ -19,14 +19,12 @@
       </button>
     </nav>
     <div class="container-fluid">
-      <!--
-      <div v-if="token == null">
+      <div v-if="this.username == undefined">
         <HelloWorld />
       </div>
       <div v-else>
         <HelloBooks />
-      </div>-->
-      <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -45,11 +43,13 @@ export default {
     return {
       token: localStorage.getItem("token"),
       username: "",
+      authDetail: "",
     };
   },
   async created() {
     this.getToken();
     this.getUser();
+    //this.isAuthenticated();
   },
   methods: {
     getToken() {
@@ -61,21 +61,33 @@ export default {
       }
     },
     async getUser() {
-      if (this.token != null) {
-        var response = await fetch("http://localhost:8001/protected", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer" + " " + this.token,
-          },
-        }).then((auth) => auth.json());
-        console.log(response);
-        this.username = response["name"];
-      }
+      //if (this.token != null ) {
+      var response = await fetch("http://localhost:8001/protected", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer" + " " + this.token,
+        },
+      }).then((auth) => auth.json());
+      this.authDetail = response.detail;
+      this.username = response["name"];
+      console.log("username = " + this.username);
+      console.log("authdetail = " + this.authDetail);
+      //}
     },
+    /*async isAuthenticated() {
+      var response = await fetch("http://0.0.0.0:8001/users/me", {
+        headers: {
+          accept: "application/json",
+        },
+      }).then((response) => response.json());
+      console.log("isAuth");
+      console.log(response);
+    },*/
     logout() {
       localStorage.removeItem("token");
       this.token = null;
       this.username = "";
+      location.reload();
     },
   },
 };

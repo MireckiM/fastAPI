@@ -131,9 +131,7 @@ export default {
       password2: "",
     };
   },
-  async created() {
-    this.isUserAuthenticated();
-  },
+  async created() {},
   methods: {
     async login() {
       var response = fetch("http://0.0.0.0:8001/login", {
@@ -149,23 +147,10 @@ export default {
       }).then((response) => response.json());
       console.log(await response);
       var res = await response;
-      //console.log(res["token"]);
+
       localStorage.setItem("token", res["token"]);
       console.log(localStorage.getItem("token"));
       location.reload();
-      /*var auth = await fetch("http://localhost:8001/protected", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer" + " " + res["token"],
-        },
-      }).then((auth) => auth.json());
-      console.log(auth);
-      console.log(auth["name"]);
-      */
-      /*this.userTokenized = auth["name"];
-      if (this.userTokenized == this.username) {
-        this.userLogged = true;
-      }*/
     },
 
     register() {
@@ -183,16 +168,6 @@ export default {
       console.log("ok");
       console.log(response);
       //location.reload();
-    },
-
-    isUserAuthenticated() {
-      if (localStorage.getItem("token" != null)) {
-        this.userLogged = true;
-      } else {
-        this.userLogged = false;
-      }
-      console.log(this.userLogged);
-      console.log(localStorage.getItem("token"));
     },
 
     clear() {
