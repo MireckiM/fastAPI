@@ -129,9 +129,12 @@ export default {
       username: "",
       password: "",
       password2: "",
+      user: "",
     };
   },
-  async created() {},
+  async created() {
+    //this.getUser();
+  },
   methods: {
     async login() {
       var response = fetch("http://0.0.0.0:8001/login", {
@@ -148,9 +151,26 @@ export default {
       console.log(await response);
       var res = await response;
 
-      localStorage.setItem("token", res["token"]);
-      console.log(localStorage.getItem("token"));
-      location.reload();
+      //localStorage.setItem("token", res["token"]);
+      //console.log(localStorage.getItem("token"));
+      //location.reload();
+      var response2 = await fetch("http://localhost:8001/protected", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer" + " " + res["token"],
+        },
+      }).then((response2) => response2.json());
+
+      //this.user = response["name"];
+      //console.log("username = " + this.username);
+      //return response2["name"];
+      //console.log(this.username + " " + name);
+      if (this.username == response2["name"]) {
+        localStorage.setItem("token", res["token"]);
+        console.log(localStorage.getItem("token"));
+      } else {
+        console.log("nie otrzymano tokenu");
+      }
     },
 
     register() {
@@ -168,6 +188,19 @@ export default {
       console.log("ok");
       console.log(response);
       //location.reload();
+    },
+
+    async getUser() {
+      var response = await fetch("http://localhost:8001/protected", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer" + " " + this.token,
+        },
+      }).then((response) => response.json());
+
+      //this.user = response["name"];
+      //console.log("username = " + this.username);
+      return response["name"];
     },
 
     clear() {

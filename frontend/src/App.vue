@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     getToken() {
-      if (this.token != null) {
+      if (this.token != "") {
         console.log("Użytkownik zalogowany");
         console.log(localStorage.getItem("token"));
       } else {
@@ -67,22 +67,14 @@ export default {
           "Content-Type": "application/json",
           Authorization: "Bearer" + " " + this.token,
         },
-      }).then((auth) => auth.json());
-      this.authDetail = response.detail;
+      }).then((response) => response.json());
+      this.authDetail = response["detail"];
       this.username = response["name"];
       console.log("username = " + this.username);
-      console.log("authdetail = " + this.authDetail);
+      //console.log("authdetail = " + this.authDetail);
       //}
     },
-    /*async isAuthenticated() {
-      var response = await fetch("http://0.0.0.0:8001/users/me", {
-        headers: {
-          accept: "application/json",
-        },
-      }).then((response) => response.json());
-      console.log("isAuth");
-      console.log(response);
-    },*/
+
     logout() {
       localStorage.removeItem("token");
       this.token = null;

@@ -96,6 +96,9 @@ def fake_decode_token(token):
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    if not token:
+        return None
+
     user = fake_decode_token(token)
     return user
 
@@ -110,17 +113,19 @@ def register(auth_details: AuthDetails):
 
 
 @app.post("/login")
-def login(auth_details:AuthDetails):
+def login(auth_details: AuthDetails):
     user = None
     for x in users:
-        if x['username'] == auth_details.username:
+        if x["username"] == auth_details.username:
             user = x
             break
 
-    if (user is None) or (not auth_handler.verify_password(auth_details.password, user['password'])):
-        raise HTTPException(status_code=401, detail='Invalid username or password')
-    token = auth_handler.encode_token(user['username'])
-    return {'token': token}
+    if (user is None) or (
+        not auth_handler.verify_password(auth_details.password, user["password"])
+    ):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    token = auth_handler.encode_token(user["username"])
+    return {"token": token}
 
 
 @app.get("/unprotected")
@@ -130,7 +135,7 @@ def unprotected():
 
 @app.get("/protected")
 def protected(username=Depends(auth_handler.auth_wrapper)):
-    return {'name': username}
+    return {"name": username}
 
 
 @app.get("/users/me")
