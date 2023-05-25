@@ -173,8 +173,8 @@ export default {
       }
     },
 
-    register() {
-      var response = fetch("http://0.0.0.0:8001/register", {
+    async register() {
+      var response = await fetch("http://0.0.0.0:8001/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -184,7 +184,7 @@ export default {
           username: this.username,
           password: this.password,
         }),
-      });
+      }).then((response) => response.json());;
       console.log("ok");
       console.log(response);
       //location.reload();

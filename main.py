@@ -152,7 +152,7 @@ async def root():
 async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
     return {"token": token}
 
-
+#zmienic endpointy na protected
 @app.post("/add-book/", response_model=SchemaBook)
 def add_book(book: SchemaBook):
     db_book = Book(title=book.title, pages=book.pages, client_id=book.client_id)

@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     getToken() {
-      if (this.token != "") {
+      if (this.token != null) {
         console.log("Użytkownik zalogowany");
         console.log(localStorage.getItem("token"));
       } else {
