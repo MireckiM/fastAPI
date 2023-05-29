@@ -136,6 +136,7 @@ export default {
       book: {},
       clients: [],
       client: {},
+      token: localStorage.getItem("token"),
     };
   },
   async created() {
@@ -168,6 +169,8 @@ export default {
         method: "post",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer" + " " + this.token,
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(this.book),
       });

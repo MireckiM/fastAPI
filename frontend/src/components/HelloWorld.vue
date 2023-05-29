@@ -186,7 +186,7 @@ export default {
         }),
       }).then((response) => response.json());;
       console.log("ok");
-      console.log(response);
+      //console.log(response);
       //location.reload();
     },
 
