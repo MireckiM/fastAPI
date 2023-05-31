@@ -17,6 +17,14 @@ class Client(BaseModel):
         orm_mode = True
 
 
+class User(BaseModel):
+    username: str
+    password: str
+
+    class Config:
+        orm_mode = True
+
+
 class AuthDetails(BaseModel):
     username: str
     password: str

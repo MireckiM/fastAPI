@@ -24,3 +24,11 @@ class Client(Base):
     age = Column(Integer)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+
+class User(Base):
+    __tablename__ = "user"
+    id = Column(Integer, primary_key=True,index=True)
+    username = Column(String)
+    password = Column(String)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
+    time_updated = Column(DateTime(timezone=True), onupdate=func.now())

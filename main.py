@@ -10,6 +10,7 @@ from models import Client
 from models import Book
 from schema import Book as SchemaBook
 from schema import Client as SchemaClient
+from schema import User as SchemaUser
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,7 +44,7 @@ origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -155,7 +156,7 @@ async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
 
 # zmienic endpointy na protected
 @app.post("/add-book/", response_model=SchemaBook)
-def add_book(book: SchemaBook = Depends(auth_handler.auth_wrapper)):
+def add_book(book: SchemaBook, user = Depends(auth_handler.auth_wrapper)):
     db_book = Book(title=book.title, pages=book.pages, client_id=book.client_id)
     db.session.add(db_book)
     db.session.commit()
@@ -169,6 +170,13 @@ def add_client(client: SchemaClient):
     db.session.add(db_client)
     db.session.commit()
     return db_client
+
+@app.post("/add-user/", response_model=SchemaUser)
+def add_user(user: SchemaUser):
+    db_user = User(name=user.username, password=user.password)
+    db.session.add(db_user)
+    db.session.commit()
+    return db_user
 
 
 @app.get("/books/")
