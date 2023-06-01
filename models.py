@@ -2,6 +2,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+import passlib.hash as _hash
 
 Base = declarative_base()
 
@@ -28,7 +29,10 @@ class Client(Base):
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True,index=True)
-    username = Column(String)
-    password = Column(String)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+
+    def verivy_passsword(self, password: str):
+        return _hash.bcrypt.verify(password, self.hashed_password)

@@ -1,5 +1,6 @@
 import os
 import uvicorn
+import services as _services
 
 # import jwt
 from fastapi import FastAPI
@@ -112,6 +113,18 @@ def register(auth_details: AuthDetails):
     users.append({"username": auth_details.username, "password": hashed_password})
     return
 
+@app.post("/register-user/", response_model=SchemaUser)
+async def register_user(user: SchemaUser):
+
+    db_user = await _services.get_user_by_username(username=user.username, db=db)
+    if db_user:
+        raise HTTPException(
+            status_code=400, detail="Username is taken"
+        )
+    db_user = User(username=user.username, password=user.password)
+    db.session.add(db_user)
+    db.session.commit()
+    return
 
 @app.post("/login")
 def login(auth_details: AuthDetails):
@@ -156,7 +169,7 @@ async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
 
 # zmienic endpointy na protected
 @app.post("/add-book/", response_model=SchemaBook)
-def add_book(book: SchemaBook, user = Depends(auth_handler.auth_wrapper)):
+def add_book(book: SchemaBook, user=Depends(auth_handler.auth_wrapper)):
     db_book = Book(title=book.title, pages=book.pages, client_id=book.client_id)
     db.session.add(db_book)
     db.session.commit()
@@ -170,6 +183,7 @@ def add_client(client: SchemaClient):
     db.session.add(db_client)
     db.session.commit()
     return db_client
+
 
 @app.post("/add-user/", response_model=SchemaUser)
 def add_user(user: SchemaUser):
