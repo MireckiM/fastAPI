@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from models import Client
 from models import Book
+from models import User
 from schema import Book as SchemaBook
 from schema import Client as SchemaClient
 from schema import User as SchemaUser
@@ -29,6 +30,7 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 from schema import AuthDetails
 from auth import AuthHandler
+import passlib.hash as _hash
 
 load_dotenv(".env")
 
@@ -121,10 +123,17 @@ async def register_user(user: SchemaUser):
         raise HTTPException(
             status_code=400, detail="Username is taken"
         )
-    db_user = User(username=user.username, password=user.password)
-    db.session.add(db_user)
-    db.session.commit()
-    return
+    
+
+    user = await _services.register_user(user=user, db=db)
+    return await _services.create_token(user=user)
+
+#@app.post("/add-client/", response_model=SchemaClient)
+#def add_client(client: SchemaClient):
+#    db_client = Client(name=client.name, age=client.age)
+#    db.session.add(db_client)
+#    db.session.commit()
+#    return db_client
 
 @app.post("/login")
 def login(auth_details: AuthDetails):
