@@ -34,5 +34,5 @@ class User(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    def verivy_passsword(self, password: str):
-        return _hash.bcrypt.verify(password, self.hashed_password)
+#    def verivy_passsword(self, password: str):
+#        return _hash.bcrypt.verify(password, self.hashed_password)
