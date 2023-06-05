@@ -58,7 +58,7 @@
                 aria-describedby="emailHelp"
                 placeholder="Username"
                 style="margin-bottom: 20px"
-                v-model="username"
+                v-model="usermodel.username"
               />
             </div>
             <div class="form-group">
@@ -69,8 +69,9 @@
                 id="exampleInputPassword1"
                 placeholder="Password"
                 style="margin-bottom: 10px"
-                v-model="password"
+                v-model="usermodel.password"
               />
+              {{ usermodel.password }}
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Powtórz hasło</label>
@@ -82,9 +83,10 @@
                 style="margin-bottom: 20px"
                 v-model="password2"
               />
+              {{ password2 }}
             </div>
             <footer
-              v-if="password != password2 && password2 != ''"
+              v-if="usermodel.password != password2 && password2 != ''"
               class="blockquote-footer"
               style="color: red"
             >
@@ -92,7 +94,11 @@
             </footer>
 
             <button
-              v-if="password == password2 && password2 != '' && username != ''"
+              v-if="
+                usermodel.password == password2 &&
+                password2 != '' &&
+                usermodel.password != ''
+              "
               type="submit"
               class="btn btn-primary"
               style="margin-bottom: 20px"
@@ -130,6 +136,7 @@ export default {
       password: "",
       password2: "",
       user: "",
+      usermodel: {},
     };
   },
   async created() {
@@ -174,19 +181,19 @@ export default {
     },
 
     async register() {
-      var response = await fetch("http://0.0.0.0:8001/register", {
-        method: "POST",
+      var response = await fetch("http://0.0.0.0:8001/add-user", {
+        method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-
-        body: JSON.stringify({
+        body: JSON.stringify(this.usermodel),
+        /*body: JSON.stringify({
           username: this.username,
           password: this.password,
-        }),
-      }).then((response) => response.json());;
+        }*/
+      }).then((response) => response.json());
       console.log("ok");
-      //console.log(response);
+      console.log(response);
       //location.reload();
     },
 

@@ -115,25 +115,39 @@ def register(auth_details: AuthDetails):
     users.append({"username": auth_details.username, "password": hashed_password})
     return
 
+
 @app.post("/register-user/", response_model=SchemaUser)
-async def register_user(user: SchemaUser):
+def register_user(user: SchemaUser):
+    #    db_user = await _services.get_user_by_username(username=user.username, db=db)
+    #    if db_user:
+    #        raise HTTPException(
+    #            status_code=400, detail="Username is taken"
+    #        )
 
-    db_user = await _services.get_user_by_username(username=user.username, db=db)
-    if db_user:
-        raise HTTPException(
-            status_code=400, detail="Username is taken"
-        )
-    
+    # user = await _services.register_user(user=user, db=db)
+    # return await _services.create_token(user=user)
+    db_user = User(username=user.username, password=user.password)
+    db.session.add(db_user)
+    db.session.commit()
+    # db.session.refresh(db.user)
+    return db_user
 
-    user = await _services.register_user(user=user, db=db)
-    return await _services.create_token(user=user)
 
-#@app.post("/add-client/", response_model=SchemaClient)
-#def add_client(client: SchemaClient):
+@app.post("/add-user/", response_model=SchemaUser)
+def add_user(user: SchemaUser):
+    db_user = User(username=user.username, password=user.password)
+    db.session.add(db_user)
+    db.session.commit()
+    return db_user
+
+
+# @app.post("/add-client/", response_model=SchemaClient)
+# def add_client(client: SchemaClient):
 #    db_client = Client(name=client.name, age=client.age)
 #    db.session.add(db_client)
 #    db.session.commit()
 #    return db_client
+
 
 @app.post("/login")
 def login(auth_details: AuthDetails):
@@ -192,14 +206,6 @@ def add_client(client: SchemaClient):
     db.session.add(db_client)
     db.session.commit()
     return db_client
-
-
-@app.post("/add-user/", response_model=SchemaUser)
-def add_user(user: SchemaUser):
-    db_user = User(name=user.username, password=user.password)
-    db.session.add(db_user)
-    db.session.commit()
-    return db_user
 
 
 @app.get("/books/")
