@@ -170,7 +170,6 @@ export default {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer" + " " + this.token,
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(this.book),
       });

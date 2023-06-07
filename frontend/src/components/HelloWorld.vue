@@ -71,7 +71,6 @@
                 style="margin-bottom: 10px"
                 v-model="usermodel.password"
               />
-              {{ usermodel.password }}
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Powtórz hasło</label>
@@ -83,7 +82,6 @@
                 style="margin-bottom: 20px"
                 v-model="password2"
               />
-              {{ password2 }}
             </div>
             <footer
               v-if="usermodel.password != password2 && password2 != ''"
@@ -137,12 +135,22 @@ export default {
       password2: "",
       user: "",
       usermodel: {},
+      users: {},
+      usernames: [],
     };
   },
   async created() {
-    //this.getUser();
+    this.getUsers();
   },
   methods: {
+    async getUsers() {
+      var response = await fetch("http://0.0.0.0:8001/users/");
+      console.log(response);
+      this.users = await response.json();
+      //for(let i = 0; i<this.users.length; ++i){
+      //
+      //}
+    },
     async login() {
       var response = fetch("http://0.0.0.0:8001/login", {
         method: "POST",
@@ -181,20 +189,30 @@ export default {
     },
 
     async register() {
-      var response = await fetch("http://0.0.0.0:8001/add-user", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.usermodel),
-        /*body: JSON.stringify({
+      let taken = 0;
+      for (let i = 0; i < this.users.length; ++i) {
+        if (this.users[i].username == this.usermodel.username) {
+          taken = 1;
+        }
+      }
+      if (taken == 0) {
+        var response = await fetch("http://0.0.0.0:8001/add-user", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.usermodel),
+          /*body: JSON.stringify({
           username: this.username,
           password: this.password,
         }*/
-      }).then((response) => response.json());
-      console.log("ok");
-      console.log(response);
-      //location.reload();
+        }).then((response) => response.json());
+        console.log("ok");
+        console.log(response);
+        //location.reload();
+      } else {
+        console.log("Username is taken");
+      }
     },
 
     async getUser() {

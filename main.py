@@ -1,6 +1,7 @@
 import os
 import uvicorn
 import services as _services
+import psycopg2
 
 # import jwt
 from fastapi import FastAPI
@@ -34,7 +35,6 @@ import passlib.hash as _hash
 
 load_dotenv(".env")
 
-users = []
 auth_handler = AuthHandler()
 
 app = FastAPI()
@@ -86,13 +86,6 @@ class AuthHandler:
         return self.decode_token(auth.credentials)
 
 
-class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
-
 def fake_decode_token(token):
     return User(
         username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
@@ -134,19 +127,13 @@ def register_user(user: SchemaUser):
 
 
 @app.post("/add-user/", response_model=SchemaUser)
-def add_user(user: SchemaUser):
+def add_user(user: SchemaUser, auth_details: AuthDetails):
+    # hashed_password = _hash.bcrypt.hash(user.password)
+    # password = auth_handler.get_password_hash(auth_details.password)
     db_user = User(username=user.username, password=user.password)
     db.session.add(db_user)
     db.session.commit()
     return db_user
-
-
-# @app.post("/add-client/", response_model=SchemaClient)
-# def add_client(client: SchemaClient):
-#    db_client = Client(name=client.name, age=client.age)
-#    db.session.add(db_client)
-#    db.session.commit()
-#    return db_client
 
 
 @app.post("/login")
@@ -218,6 +205,14 @@ def get_books():
 def get_clients():
     clients = db.session.query(Client).all()
     return clients
+
+
+@app.get("/users/")
+def get_users():
+    users = db.session.query(User).all()
+    # for x in users:
+    #    print(x.username)
+    return users
 
 
 if __name__ == "__main__":
