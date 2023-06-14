@@ -149,7 +149,7 @@ export default {
       this.users = await response.json();
     },
     async login() {
-    var response = fetch("http://0.0.0.0:8001/login", {
+      var response = fetch("http://0.0.0.0:8001/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -179,30 +179,20 @@ export default {
     },
 
     async register() {
-      let taken = 0;
-      for (let i = 0; i < this.users.length; ++i) {
-        if (this.users[i].username == this.usermodel.username) {
-          taken = 1;
-        }
-      }
-      if (taken == 0) {
-        var response = await fetch("http://0.0.0.0:8001/add-user", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.usermodel),
-          /*body: JSON.stringify({
+      var response = await fetch("http://0.0.0.0:8001/add-user", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.usermodel),
+        /*body: JSON.stringify({
           username: this.username,
           password: this.password,
         }*/
-        }).then((response) => response.json());
-        console.log("ok");
-        console.log(response);
-        //location.reload();
-      } else {
-        console.log("Username is taken");
-      }
+      }).then((response) => response.json());
+     
+      console.log(response);
+      //location.reload();
     },
 
     async getUser() {

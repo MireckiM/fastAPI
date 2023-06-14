@@ -6,6 +6,8 @@ import passlib.hash as _hash
 import jwt as _jwt
 from fastapi_sqlalchemy import db
 
+_JWT_SECRET = "secret"
+
 
 #def get_db():
 #    db = _database.SessionLocal()

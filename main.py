@@ -3,7 +3,7 @@ import uvicorn
 import services as _services
 import psycopg2
 
-#import JWT
+import jwt
 from fastapi import FastAPI
 import fastapi as _fastapi
 from fastapi_sqlalchemy import DBSessionMiddleware, db
@@ -46,7 +46,6 @@ app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
 origins = ["*"]
 
-userList = []
 
 app.add_middleware(
     CORSMiddleware,
@@ -95,15 +94,13 @@ def fake_decode_token(token):
     )
 
 
-#async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-#    if not token:
-#        return None
-#
-#    user = fake_decode_token(token)
-#    return user
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    if not token:
+        return None
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(AuthHandler.security)):
-    token = credentials.credentials
+    user = fake_decode_token(token)
+    return user
+
 
 
 #@app.post("/register", status_code=201)
@@ -134,9 +131,13 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(A
 
 
 @app.post("/add-user/", response_model=SchemaUser)
-def add_user(user: SchemaUser, auth_details: AuthDetails):
+async def add_user(user: SchemaUser):
     # hashed_password = _hash.bcrypt.hash(user.password)
     # password = auth_handler.get_password_hash(auth_details.password)
+    ifuser = await _services.get_user_by_username(username=user.username)
+    if ifuser:
+        raise _fastapi.HTTPException(status_code = 400, detail="Username is taken")
+    
     db_user = User(
         #username=user.username, password=_hash.bcrypt.hash(user.password)
         username=user.username, password=user.password
