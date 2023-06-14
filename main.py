@@ -94,12 +94,12 @@ def fake_decode_token(token):
     )
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    if not token:
-        return None
-
-    user = fake_decode_token(token)
-    return user
+#async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+#    if not token:
+#        return None
+#
+#    user = fake_decode_token(token)
+#    return user
 
 
 
@@ -176,9 +176,9 @@ def protected(username=Depends(auth_handler.auth_wrapper)):
     return {"name": username}
 
 
-@app.get("/users/me")
-async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
-    return current_user
+#@app.get("/users/me")
+#async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+#    return current_user
 
 
 @app.get("/")
